@@ -185,6 +185,34 @@ const createEditForm = (eventTarget) => {
 
     const br = eventTarget.previousSibling.previousSibling.previousSibling
     br.parentElement.insertBefore(form, br.nextSibling)
+
+    form.addEventListener('submit',event => {
+        event.preventDefault()
+
+        const updatedQuote = {
+            quote: event.target.children[0].children[1].value,
+            author: event.target.children[1].children[1].value
+        }
+
+        const reqObj = {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedQuote)
+        }
+
+        fetch(postUrl + `/${event.target.nextSibling.dataset.id}`, reqObj)
+        .then(resp => resp.json())
+        .then(quote => renderQuote(quote))
+
+        event.target.parentElement.firstElementChild.innerText = event.target.children[0].children[1].value
+        event.target.parentElement.children[1].innerText = event.target.children[1].children[1].value
+
+        event.target.children[0].children[1].value = ""
+        event.target.children[1].children[1].value = ""
+        // debugger
+    })
 }
 
 main()
