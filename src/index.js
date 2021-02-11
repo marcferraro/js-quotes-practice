@@ -4,6 +4,7 @@ const postUrl = 'http://localhost:3000/quotes'
 const main = () => {
     fetchQuotes()
     addSubmitListener()
+    addClickListener()
     // fetchQuotesJson(getUrl)
 }
 
@@ -52,6 +53,7 @@ const renderQuote = (quote) => {
     const deleteButton = document.createElement('button')
     deleteButton.className = 'btn-danger'
     deleteButton.innerText = 'DELETE'
+    deleteButton.dataset.id = quote.id
 
     blockquote.append(p, footer, br, likeButton, deleteButton)
     li.append(blockquote)
@@ -63,7 +65,7 @@ const addSubmitListener = () => {
 
     form.addEventListener('submit', event => {
         event.preventDefault()
-        // debugger
+
         const newQuote = {
             quote: event.target.children[0].children[1].value,
             author: event.target.children[1].children[1].value
@@ -80,7 +82,37 @@ const addSubmitListener = () => {
         fetch(postUrl, reqObj)
         .then(resp => resp.json())
         .then(quote => renderQuote(quote))
+
+        event.target.children[0].children[1].value = ""
+        event.target.children[1].children[1].value = ""
+
     })
+}
+
+const addClickListener = () => {
+    const body = document.querySelector('body')
+
+    body.addEventListener('click', event => {
+        event.preventDefault
+
+        if (event.target.className === 'btn-danger'){
+            deleteQuote(event.target)
+        }
+    })
+}
+
+const deleteQuote = (eventTarget) => {
+    // debugger
+    const reqObj = {
+        method: "DELETE"
+    }
+
+    fetch(postUrl+ `/${eventTarget.dataset.id}`, reqObj)
+    .then(resp => resp.json())
+    // .then(deletedQuote => )
+    eventTarget.parentElement.parentElement.remove()
+    alert(`Successfuly Deleted Quote.`)
+    // debugger
 }
 
 main()
