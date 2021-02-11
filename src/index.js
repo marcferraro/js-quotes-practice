@@ -91,11 +91,13 @@ const addSubmitQuoteListener = () => {
 
         fetch(postUrl, reqObj)
         .then(resp => resp.json())
-        .then(quote => renderQuote(quote))
-
-        event.target.children[0].children[1].value = ""
+        .then(quote => {
+            console.log(event.target)
+            event.target.children[0].children[1].value = ""
         event.target.children[1].children[1].value = ""
-
+            renderQuote(quote)
+        })
+        // debugger
     })
 }
 
@@ -135,9 +137,10 @@ const deleteQuote = (eventTarget) => {
 
     fetch(postUrl+ `/${eventTarget.dataset.id}`, reqObj)
     .then(resp => resp.json())
-    // .then(deletedQuote => )
-    eventTarget.parentElement.parentElement.remove()
-    alert(`Successfuly Deleted Quote.`)
+    .then(deletedQuote => {
+        eventTarget.parentElement.parentElement.remove()
+        alert(`Successfuly Deleted Quote.`)
+    })
     // debugger
 }
 
@@ -158,11 +161,13 @@ const likeQuote = (eventTarget) => {
 
     fetch(likeUrl, reqObj)
     .then(resp => resp.json())
-    .then(like => console.log(like, 'successfully liked'))
+    .then(like => {
+        const span = eventTarget.firstElementChild
+        span.dataset.likes = parseInt(span.dataset.likes, 10) + 1
+        span.innerText = span.dataset.likes
+        console.log(like, 'successfully liked')
+    })
 
-    const span = eventTarget.firstElementChild
-    span.dataset.likes = parseInt(span.dataset.likes, 10) + 1
-    span.innerText = span.dataset.likes
 
 }
 
@@ -204,14 +209,16 @@ const createEditForm = (eventTarget) => {
 
         fetch(postUrl + `/${event.target.nextSibling.dataset.id}`, reqObj)
         .then(resp => resp.json())
-        .then(quote => renderQuote(quote))
+        .then(quote => {
 
-        event.target.parentElement.firstElementChild.innerText = event.target.children[0].children[1].value
-        event.target.parentElement.children[1].innerText = event.target.children[1].children[1].value
+            event.target.parentElement.firstElementChild.innerText = event.target.children[0].children[1].value
+            event.target.parentElement.children[1].innerText = event.target.children[1].children[1].value
 
-        event.target.children[0].children[1].value = ""
-        event.target.children[1].children[1].value = ""
-        // debugger
+            event.target.children[0].children[1].value = ""
+            event.target.children[1].children[1].value = ""
+
+            renderQuote(quote)
+        })
     })
 }
 
