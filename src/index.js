@@ -92,9 +92,10 @@ const addSubmitQuoteListener = () => {
         fetch(postUrl, reqObj)
         .then(resp => resp.json())
         .then(quote => {
+            debugger
             console.log(event.target)
             event.target.children[0].children[1].value = ""
-        event.target.children[1].children[1].value = ""
+            event.target.children[1].children[1].value = ""
             renderQuote(quote)
         })
         // debugger
@@ -210,7 +211,7 @@ const createEditForm = (eventTarget) => {
         fetch(postUrl + `/${event.target.nextSibling.dataset.id}`, reqObj)
         .then(resp => resp.json())
         .then(quote => {
-
+            // debugger
             event.target.parentElement.firstElementChild.innerText = event.target.children[0].children[1].value
             event.target.parentElement.children[1].innerText = event.target.children[1].children[1].value
 
