@@ -186,7 +186,7 @@ const createEditForm = (eventTarget) => {
     const br = eventTarget.previousSibling.previousSibling.previousSibling
     br.parentElement.insertBefore(form, br.nextSibling)
 
-    form.addEventListener('submit',event => {
+    form.addEventListener('submit', event => {
         event.preventDefault()
 
         const updatedQuote = {
