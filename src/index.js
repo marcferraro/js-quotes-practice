@@ -92,7 +92,7 @@ const addSubmitQuoteListener = () => {
         fetch(postUrl, reqObj)
         .then(resp => resp.json())
         .then(quote => {
-            debugger
+            // debugger
             console.log(event.target)
             event.target.children[0].children[1].value = ""
             event.target.children[1].children[1].value = ""
