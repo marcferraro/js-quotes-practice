@@ -1,7 +1,9 @@
 const getUrl = 'http://localhost:3000/quotes?_embed=likes'
+const postUrl = 'http://localhost:3000/quotes'
 
 const main = () => {
     fetchQuotes()
+    addSubmitListener()
     // fetchQuotesJson(getUrl)
 }
 
@@ -39,7 +41,11 @@ const renderQuote = (quote) => {
     likeButton.innerText = 'Likes: '
 
     const span = document.createElement('span')
-    span.innerText = quote.likes.length
+    if (quote.likes){
+        span.innerText = quote.likes.length
+    } else {
+        span.innerText = 0
+    }
 
     likeButton.append(span)
 
@@ -50,8 +56,31 @@ const renderQuote = (quote) => {
     blockquote.append(p, footer, br, likeButton, deleteButton)
     li.append(blockquote)
     ul.append(li)
-    // console.log(quote.quote)
+}
 
+const addSubmitListener = () => {
+    const form = document.getElementById('new-quote-form')
+
+    form.addEventListener('submit', event => {
+        event.preventDefault()
+        // debugger
+        const newQuote = {
+            quote: event.target.children[0].children[1].value,
+            author: event.target.children[1].children[1].value
+        }
+
+        const reqObj = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newQuote)
+        }
+
+        fetch(postUrl, reqObj)
+        .then(resp => resp.json())
+        .then(quote => renderQuote(quote))
+    })
 }
 
 main()
