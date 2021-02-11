@@ -4,7 +4,7 @@ const likeUrl = 'http://localhost:3000/likes'
 
 const main = () => {
     fetchQuotes()
-    addSubmitListener()
+    addSubmitQuoteListener()
     addClickListener()
     // fetchQuotesJson(getUrl)
 }
@@ -59,12 +59,18 @@ const renderQuote = (quote) => {
     deleteButton.innerText = 'DELETE'
     deleteButton.dataset.id = quote.id
 
-    blockquote.append(p, footer, br, likeButton, deleteButton)
+    const editButton = document.createElement('button')
+    editButton.innerText = "Edit Quote"
+    editButton.dataset.id = quote.id
+    editButton.className = "btn-edit"
+    editButton.dataset.form = false
+
+    blockquote.append(p, footer, br, likeButton, deleteButton, editButton)
     li.append(blockquote)
     ul.append(li)
 }
 
-const addSubmitListener = () => {
+const addSubmitQuoteListener = () => {
     const form = document.getElementById('new-quote-form')
 
     form.addEventListener('submit', event => {
@@ -106,6 +112,18 @@ const addClickListener = () => {
         if (event.target.className === 'btn-success'){
             likeQuote(event.target)
         }
+
+        if (event.target.className === 'btn-edit' && event.target.dataset.form === 'false'){
+            event.target.dataset.form = true
+            createEditForm(event.target)
+
+            // update edit button
+        } else if (event.target.className === 'btn-edit' && event.target.dataset.form === 'true'){
+            event.target.dataset.form = false
+            const form = event.target.parentElement.querySelector('form')
+            form.remove()
+        }
+        
     })
 }
 
@@ -148,5 +166,25 @@ const likeQuote = (eventTarget) => {
 
 }
 
+const createEditForm = (eventTarget) => {
+    // console.log(eventTarget)
+    const form = document.createElement('form')
+    form.id = 'edit-quote-form'
+
+    form.innerHTML = `<div class="form-group">
+    <label for="edit-quote">Edit Quote</label>
+    <input name="quote" type="text" class="form-control" id="edit-quote" value="${eventTarget.parentElement.firstElementChild.innerText}">
+    </div>
+    <div class="form-group">
+        <label for="Author">Author</label>
+        <input name="author" type="text" class="form-control" id="author" value="${eventTarget.parentElement.children[1].innerText}">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    </div>`
+
+    const br = eventTarget.previousSibling.previousSibling.previousSibling
+    br.parentElement.insertBefore(form, br.nextSibling)
+}
 
 main()
