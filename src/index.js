@@ -126,7 +126,8 @@ const deleteQuote = (eventTarget) => {
 const likeQuote = (eventTarget) => {
     // debugger
     const likeObj = {
-        quoteId: parseInt(eventTarget.dataset.id)
+        quoteId: parseInt(eventTarget.dataset.id),
+        createdAt: Date.now()
     }
 
     const reqObj = {
@@ -139,7 +140,7 @@ const likeQuote = (eventTarget) => {
 
     fetch(likeUrl, reqObj)
     .then(resp => resp.json())
-    .then(like => console.log('successfully liked'))
+    .then(like => console.log(like, 'successfully liked'))
 
     const span = eventTarget.firstElementChild
     span.dataset.likes = parseInt(span.dataset.likes, 10) + 1
