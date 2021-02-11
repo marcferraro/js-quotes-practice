@@ -1,5 +1,6 @@
 const getUrl = 'http://localhost:3000/quotes?_embed=likes'
 const postUrl = 'http://localhost:3000/quotes'
+const likeUrl = 'http://localhost:3000/likes'
 
 const main = () => {
     fetchQuotes()
@@ -40,12 +41,15 @@ const renderQuote = (quote) => {
     const likeButton = document.createElement('button')
     likeButton.className = 'btn-success'
     likeButton.innerText = 'Likes: '
+    likeButton.dataset.id = quote.id
 
     const span = document.createElement('span')
     if (quote.likes){
         span.innerText = quote.likes.length
+        span.dataset.likes = quote.likes.length
     } else {
         span.innerText = 0
+        span.dataset.likes = 0
     }
 
     likeButton.append(span)
@@ -98,6 +102,10 @@ const addClickListener = () => {
         if (event.target.className === 'btn-danger'){
             deleteQuote(event.target)
         }
+
+        if (event.target.className === 'btn-success'){
+            likeQuote(event.target)
+        }
     })
 }
 
@@ -114,5 +122,30 @@ const deleteQuote = (eventTarget) => {
     alert(`Successfuly Deleted Quote.`)
     // debugger
 }
+
+const likeQuote = (eventTarget) => {
+    // debugger
+    const likeObj = {
+        quoteId: parseInt(eventTarget.dataset.id)
+    }
+
+    const reqObj = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(likeObj)
+    }
+
+    fetch(likeUrl, reqObj)
+    .then(resp => resp.json())
+    .then(like => console.log('successfully liked'))
+
+    const span = eventTarget.firstElementChild
+    span.dataset.likes = parseInt(span.dataset.likes, 10) + 1
+    span.innerText = span.dataset.likes
+
+}
+
 
 main()
